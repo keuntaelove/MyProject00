@@ -1,8 +1,14 @@
 package org.keuntae.mapper;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.keuntae.domain.BoardVO;
+import org.keuntae.domain.Criteria;
+import org.keuntae.domain.PageDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -94,6 +100,70 @@ public class BoardMapperTests {
 		log.info("count : " + boardMapper.update(vo));
 		
 	}
+	
+	
+	
+	@Test
+	public void testPaging() {
+		//1 10
+		Criteria cri = new Criteria();
+		
+		List<BoardVO> list = boardMapper.getListWithPaging(cri);
+		
+		list.forEach(b -> log.info(b));
+	}
+	
+	
+	
+	@Test
+	public void testPageDTO() {
+		
+		Criteria cri = new Criteria();
+		cri.setPageNum(11);
+		
+		PageDTO pageDTO = new PageDTO(cri, 250);
+		
+		log.info(pageDTO);
+	}
+	
+	
+	
+	@Test
+	public void testSearchPaging() {
+		//1 10
+		Criteria cri = new Criteria();
+		
+		cri.setType("TCW");
+		cri.setKeyword("Test");
+		
+		List<BoardVO> list = boardMapper.getListWithPaging(cri);
+		
+		list.forEach(b -> log.info(b));
+	}
+	
+	
+	
+	
+	
+	
+	@Test
+	public void testSearch() {
+		Map<String, String> map = new HashMap<>();
+//		map.put("T", "TTT");
+//		map.put("C", "CCC");
+//		map.put("W", "WWW");
+		
+		Map<String, Map<String, String>> outer = new HashMap<>();
+		outer.putIfAbsent("map", map);
+		
+		List<BoardVO> list = boardMapper.searchTest(outer);
+		
+		log.info(list);
+	}
+	
+	
+	
+	
 	
 	
 	

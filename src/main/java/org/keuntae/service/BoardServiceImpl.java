@@ -3,6 +3,7 @@ package org.keuntae.service;
 import java.util.List;
 
 import org.keuntae.domain.BoardVO;
+import org.keuntae.domain.Criteria;
 import org.keuntae.mapper.BoardMapper;
 import org.springframework.stereotype.Service;
 
@@ -50,6 +51,18 @@ public class BoardServiceImpl implements BoardService {
 	public List<BoardVO> getList() {
 		
 		return mapper.getList();
+	}
+
+	@Override
+	public List<BoardVO> getList(Criteria cri) {
+		
+		return mapper.getListWithPaging(cri);
+	}
+
+	@Override
+	public int getTotal(Criteria cri) {
+		
+		return mapper.getTotalCount(cri);
 	}
 	
 	

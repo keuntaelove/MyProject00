@@ -36,15 +36,58 @@
                                 <c:forEach items="${list}" var="board">
                                     <tr class="odd gradeX">
                                         <td>${board.bno }</td>
-                                        <td><a href='/board/get?bno=<c:out value="${board.bno}"/>'><c:out value="${board.title }" /></td>
+                                        <td><a class='move' href='<c:out value="${board.bno}"/>'><c:out value="${board.title }" /></td>
                                         <td>${board.writer }</td>
                                         <td><fmt:formatDate pattern="yyyy-MM-dd" value="${board.regdate }"/></td>
                                         <td><fmt:formatDate pattern="yyyy-MM-dd" value="${board.updateDate }"/></td>
-                                    </tr>
+                                    </tr >
                                  </c:forEach>  
                                 </tbody>
                             </table>
                             <!-- /.table-responsive -->
+                            
+                            <form id='searchForm' action="/board/list" method="get">
+                            	<select name="type">
+                            		<option value="" ${pageMaker.cri.type == null?"selected":"" }>---</option>
+                            		<option value="T" ${pageMaker.cri.type eq 'T'?"selected":"" }>제목</option>
+                            		<option value="C" ${pageMaker.cri.type eq 'C'?"selected":"" }>내용</option>
+                            		<option value="W" ${pageMaker.cri.type eq 'W'?"selected":"" }>작성자</option>
+                            		<option value="TC" ${pageMaker.cri.type eq 'TC'?"selected":"" }>제목+내용</option>
+                            		<option value="TCW" ${pageMaker.cri.type eq 'TCW'?"selected":"" }>제목+내용+작성자</option>
+                            	</select>
+                            	<input type='text' name='keyword' value='${pageMaker.cri.keyword}'>
+                            	<input type='hidden' name='pageNum' value='${pageMaker.cri.pageNum}'>
+                            	<input type='hidden' name='amount' value='${pageMaker.cri.amount}'>
+                            	<button class='btn btn-default'>Search</button>
+                            </form>
+                            
+                            
+                            
+                            <div class='pull-right'>
+                            	<ul class="pagination">
+                            		<c:if test="${pageMaker.prev}">
+		                            	<li class="page-item">
+		      								<a class="page-link" href="${pageMaker.startPage - 1 }" tabindex="-1">Previous</a>
+		    							</li>
+	    							</c:if>
+	                            		<c:forEach begin="${pageMaker.startPage }" 
+	                            					end="${pageMaker.endPage }" var="num">
+	                            		<li class="page-item ${pageMaker.cri.pageNum == num?"active":""} " ><a class="page-link" href="${num}">${num}</a></li>
+	                            		</c:forEach>
+	                            	<c:if test="${pageMaker.next}">
+		                            	<li class="page-item">
+		      								<a class="page-link" href="${pageMaker.endPage + 1 }" tabindex="-1">Next</a>
+		    							</li>
+	                            	</c:if>
+                            	</ul>
+                            </div>
+                            
+                            <form id="actionForm" action="/board/list" method='get'>
+                            	<input type='hidden' name='pageNum' value='${pageMaker.cri.pageNum}'>
+                            	<input type='hidden' name='amount' value='${pageMaker.cri.amount}'>
+                            	<input type='hidden' name='type' value='${pageMaker.cri.type}'>
+                            	<input type='hidden' name='keyword' value='${pageMaker.cri.keyword}'>
+                            </form>
                             
                         </div>
                         <!-- /.panel-body -->
@@ -105,6 +148,59 @@ $(document).ready(function(){
 		self.location="/board/register";
 		
 	});
+	
+	
+	//pageNum event
+	var actionForm = $("#actionForm");
+	
+	$(".page-link").on("click", function(e){
+		
+		e.preventDefault();
+		
+		var targetPage = $(this).attr("href");
+		
+		console.log(targetPage);
+		
+		actionForm.find("input[name='pageNum']").val(targetPage);
+		
+		actionForm.submit();
+		
+	});
+	
+	
+	
+	$(".move").on("click", function(e){
+
+		e.preventDefault();
+
+		var targetBno = $(this).attr("href");
+		
+		console.log(targetBno);
+		
+		actionForm.append("<input type='hidden' name='bno' value='"+targetBno+"'>'");
+		
+		actionForm.attr("action", "/board/get").submit();
+		
+		
+		
+	});
+	
+	
+	
+	var searchForm = $("#searchForm");
+	
+	$("#searchForm button").on("click", function(e){
+		e.preventDefault();
+		console.log("..........click");
+		
+		searchForm.find("input[name='pageNum']").val(1);
+		
+		searchForm.submit();
+	});
+	
+	
+	
+	
 	
 });
 
